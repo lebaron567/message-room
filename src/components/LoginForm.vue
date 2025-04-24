@@ -8,9 +8,10 @@ const { login, error } = useAuth()
 
 const handleLogin = async () => {
   const success = await login(username.value, password.value)
-  if (success) {
-    console.log('Connecté !')
-    // redirection ou changement de page ici
+  if (success)  {
+    console.log('Connecté ✅') // Tu peux tester ici
+  } else {
+    console.log('Échec ❌')
   }
 }
 </script>

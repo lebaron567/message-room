@@ -1,23 +1,13 @@
 import { ref } from 'vue'
+import AuthService from '@/services/AuthService'
 
 const token = ref(localStorage.getItem('jwt') || '')
+const error = ref(null)
 
 export function useAuth() {
-  const error = ref(null)
-
   const login = async (username, password) => {
     try {
-      const response = await fetch('https://edu.tardigrade.land/msg/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      })
-
-      if (!response.ok) {
-        throw new Error('Nom d’utilisateur ou mot de passe incorrect.')
-      }
-
-      const data = await response.json()
+      const data = await AuthService.login(username, password)
       token.value = data.token
       localStorage.setItem('jwt', token.value)
       error.value = null
@@ -30,18 +20,11 @@ export function useAuth() {
 
   const extendSession = async () => {
     try {
-      const response = await fetch('https://edu.tardigrade.land/msg/extend_session', {
-        method: 'GET',
-        headers: { Authorization: `Bearer ${token.value}` }
-      })
-
-      if (!response.ok) throw new Error('Session invalide.')
-
-      const data = await response.json()
+      const data = await AuthService.extendSession(token.value)
       token.value = data.token
       localStorage.setItem('jwt', token.value)
     } catch (err) {
-      console.error('Erreur d’extension de session:', err)
+      console.error('Erreur d’extension de session :', err)
     }
   }
 
@@ -50,5 +33,5 @@ export function useAuth() {
     localStorage.removeItem('jwt')
   }
 
-  return { token, login, extendSession, logout, error }
+  return { token, login, logout, extendSession, error }
 }
