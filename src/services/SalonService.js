@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://edu.tardigrade.land/msg/protected/user/meta'; // Remplacez par l'URL de votre API
+const API_URL = 'https://edu.tardigrade.land/msg/protected/user/channels'; // Remplacez par l'URL de votre API
 
 export default {
   async getSalons() {
