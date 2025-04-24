@@ -1,0 +1,58 @@
+<template>
+  <div>
+    <h1>Liste des Salons Privés</h1>
+    <ul>
+      <li v-for="salon in salons" :key="salon.id" @click="openSalon(salon.id)" class="salon-item">
+        <img :src="salon.imageUrl" :alt="salon.name" class="salon-image" />
+        <span>{{ salon.name }}</span>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+import SalonService from '@/services/SalonService';
+
+export default {
+  data() {
+    return {
+      salons: []
+    };
+  },
+  created() {
+    this.fetchSalons();
+  },
+  methods: {
+    async fetchSalons() {
+      try {
+        this.salons = await SalonService.getSalons();
+      } catch (error) {
+        console.error('Erreur lors de la récupération des salons:', error);
+      }
+    },
+    openSalon(salonId) {
+      // Logique pour ouvrir l'historique des messages du salon
+      console.log('Ouverture du salon avec ID:', salonId);
+      // Par exemple, rediriger vers une autre vue ou composant
+      this.$router.push({ name: 'SalonMessages', params: { id: salonId } });
+    }
+  }
+};
+</script>
+
+<style scoped>
+.salon-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+.salon-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+</style>
