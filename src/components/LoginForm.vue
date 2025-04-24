@@ -1,20 +1,24 @@
 <script setup>
 import { ref } from 'vue'
-import { useAuth } from '@/js/useAuth'
+import { useRouter } from 'vue-router'
+import { useAuth } from '@/js/useAuth' // ou '@/composables/useAuth'
 
+const router = useRouter()
 const username = ref('')
 const password = ref('')
-const { login, error } = useAuth()
+const { login, token, error } = useAuth()
 
 const handleLogin = async () => {
   const success = await login(username.value, password.value)
-  if (success)  {
-    console.log('Connecté ✅') // Tu peux tester ici
+  if (success) {
+    console.log('🔐 Token reçu :', token) 
+    router.push('/home') // ✅ Redirection
   } else {
-    console.log('Échec ❌')
+    console.log('❌ Échec de la connexion')
   }
 }
 </script>
+
 
 
 <template>
