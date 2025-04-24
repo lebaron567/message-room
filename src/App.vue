@@ -1,13 +1,11 @@
 <script setup>
-    import createsalon from './components/CreateSalon/createsalon.vue';
+// rien à importer ici, vue-router injecte tout automatiquement
 </script>
 
 <template>
-    <div id="app">
-        <createsalon />
-    </div>
+  <router-view />
 </template>
 
 <style scoped>
-
+/* Tu peux ajouter un fond ou un layout global ici */
 </style>
