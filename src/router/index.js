@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginForm from '@/components/LoginForm.vue'
 import HomeView from '@/views/HomeView.vue'
 import SalonList from '@/components/SalonList.vue'
+import '@/assets/main.css'
 
 const routes = [
   { path: '/', name: 'login', component: LoginForm },
