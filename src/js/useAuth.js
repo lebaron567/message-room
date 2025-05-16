@@ -1,17 +1,24 @@
 import AuthService from '@/services/AuthService'
 import { useAuthStore } from '@/stores/auth'
+import { storeToRefs } from 'pinia'
+
 
 export function useAuth() {
   const store = useAuthStore()
+  const { token, user, error } = storeToRefs(store)
+
 
   const login = async (username, password) => {
+      console.log('🧪 login() appelé avec :', username, password) // ← ce log DOIT apparaître
     try {
       const data = await AuthService.login(username, password)
+      console.log('✅ Réponse API login :', data)
       store.setToken(data.token)
       store.setUser({ username, admin: data.admin })
+      store.setError(null);
       return true
     } catch (err) {
-      store.error = err.message // à ajouter dans le store si besoin
+      store.setError(err.message); // à ajouter dans le store si besoin
       return false
     }
   }
@@ -19,6 +26,7 @@ export function useAuth() {
   const extendSession = async () => {
     try {
       const data = await AuthService.extendSession(store.token)
+      console.log('Réponse API reçue :', data)
       store.setToken(data.token)
     } catch (err) {
       console.error('Erreur d’extension de session :', err)
@@ -34,7 +42,8 @@ export function useAuth() {
     login,
     logout,
     extendSession,
-    token: store.token,
-    user: store.user
+    token,
+    user: store.user,
+    error: store.error 
   }
 }
