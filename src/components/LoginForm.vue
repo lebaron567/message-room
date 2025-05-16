@@ -11,7 +11,8 @@ const { login, token, error } = useAuth()
 const handleLogin = async () => {
   const success = await login(username.value, password.value)
   if (success) {
-    console.log('🔐 Token reçu :', token) 
+    console.log('Token reçu :', token.value) // Doit afficher un vrai token maintenant
+
     router.push('/home') // ✅ Redirection
   } else {
     console.log('❌ Échec de la connexion')
@@ -32,7 +33,7 @@ const handleLogin = async () => {
         <input type="password" id="password" v-model="password" required />
       </div>
       <button type="submit">Se connecter</button>
-      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+      <p v-if="error" class="error">{{ errorMessage }}</p>
     </form>
   </template>
   
