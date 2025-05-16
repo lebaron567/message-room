@@ -5,6 +5,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: null,
     user: null,
+    error: null,
   }),
   actions: {
     setToken(token) {
@@ -16,7 +17,11 @@ export const useAuthStore = defineStore('auth', {
     clearAuth() {
       this.token = null;
       this.user = null;
+      this.error = null;
     },
+    setError(message) {
+      this.error = message;
+    }
   },
   persist: true, 
 });
