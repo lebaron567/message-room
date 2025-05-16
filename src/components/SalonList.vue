@@ -1,45 +1,52 @@
-
 <script setup>
-import { ref, onMounted } from 'vue';
-import SalonService from '@/services/SalonService';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuth } from '@/js/useAuth'
+import { getSalons } from '@/services/SalonService'
 
-const salons = ref([]);
-const router = useRouter();
+const salons = ref([])
+const router = useRouter()
+const { token } = useAuth() // ✅ récupère le token réactif
 
 const fetchSalons = async () => {
   try {
-    salons.value = await SalonService.getSalons();
+    salons.value = await getSalons(token.value) // ✅ injecte le token
   } catch (error) {
-    console.error('Erreur lors de la récupération des salons:', error);
+    console.error('❌ Erreur lors de la récupération des salons :', error)
   }
-};
+}
 
 const openSalon = (salonId) => {
-  // Logique pour ouvrir l'historique des messages du salon
-  console.log('Ouverture du salon avec ID:', salonId);
-  // Par exemple, rediriger vers une autre vue ou composant
-  router.push({ name: 'SalonMessages', params: { id: salonId } });
-};
+  console.log('➡️ Ouverture du salon ID :', salonId)
+  router.push({ name: 'SalonMessages', params: { id: salonId } })
+}
 
 onMounted(() => {
-  fetchSalons();
-});
+  if (token.value) {
+    fetchSalons()
+  } else {
+    console.warn('🔒 Aucun token, redirection vers login possible ?')
+    router.push('/')
+  }
+})
 </script>
-
 
 <template>
   <div>
     <h1>Liste des Salons Privés</h1>
     <ul>
-      <li v-for="salon in salons" :key="salon.id" @click="openSalon(salon.id)" class="salon-item">
+      <li
+        v-for="salon in salons"
+        :key="salon.id"
+        @click="openSalon(salon.id)"
+        class="salon-item"
+      >
         <img :src="salon.img" :alt="salon.name" class="salon-image" />
         <span>{{ salon.name }}</span>
       </li>
     </ul>
   </div>
 </template>
-
 
 <style scoped>
 .salon-item {
@@ -48,6 +55,10 @@ onMounted(() => {
   cursor: pointer;
   padding: 8px;
   border-bottom: 1px solid #ccc;
+}
+
+.salon-item:hover {
+  background-color: #f5f5f5;
 }
 
 .salon-image {
