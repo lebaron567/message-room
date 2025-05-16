@@ -25,7 +25,7 @@ export function useAuth() {
 
   const extendSession = async () => {
     try {
-      const data = await AuthService.extendSession(store.token)
+      const data = await AuthService.extendSession(token.value)
       console.log('Réponse API reçue :', data)
       store.setToken(data.token)
     } catch (err) {
@@ -43,7 +43,7 @@ export function useAuth() {
     logout,
     extendSession,
     token,
-    user: store.user,
-    error: store.error 
+    user,
+    error
   }
 }
