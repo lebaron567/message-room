@@ -1,8 +1,12 @@
 import AuthService from '@/services/AuthService'
 import { useAuthStore } from '@/stores/auth'
+import { storeToRefs } from 'pinia'
+
 
 export function useAuth() {
   const store = useAuthStore()
+  const { token, user, error } = storeToRefs(store)
+
 
   const login = async (username, password) => {
       console.log('🧪 login() appelé avec :', username, password) // ← ce log DOIT apparaître
