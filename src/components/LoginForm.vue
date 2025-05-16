@@ -13,7 +13,7 @@ const handleLogin = async () => {
   if (success) {
     console.log('Token reçu :', token.value) // Doit afficher un vrai token maintenant
 
-    router.push('/home') // ✅ Redirection
+    router.push('/channels') // ✅ Redirection
   } else {
     console.log('❌ Échec de la connexion')
   }
