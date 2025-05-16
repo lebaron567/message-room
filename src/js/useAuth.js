@@ -1,37 +1,45 @@
-import { ref } from 'vue'
 import AuthService from '@/services/AuthService'
-
-const token = ref(localStorage.getItem('jwt') || '')
-const error = ref(null)
+import { useAuthStore } from '@/stores/auth'
 
 export function useAuth() {
+  const store = useAuthStore()
+
   const login = async (username, password) => {
+      console.log('🧪 login() appelé avec :', username, password) // ← ce log DOIT apparaître
     try {
       const data = await AuthService.login(username, password)
-      token.value = data.token
-      localStorage.setItem('jwt', token.value)
-      error.value = null
+      console.log('✅ Réponse API login :', data)
+      store.setToken(data.token)
+      store.setUser({ username, admin: data.admin })
+      store.setError(null);
       return true
     } catch (err) {
-      error.value = err.message
+      store.setError(err.message); // à ajouter dans le store si besoin
       return false
     }
   }
 
   const extendSession = async () => {
     try {
-      const data = await AuthService.extendSession(token.value)
-      token.value = data.token
-      localStorage.setItem('jwt', token.value)
+      const data = await AuthService.extendSession(store.token)
+      console.log('Réponse API reçue :', data)
+      store.setToken(data.token)
     } catch (err) {
       console.error('Erreur d’extension de session :', err)
+      store.clearAuth()
     }
   }
 
   const logout = () => {
-    token.value = ''
-    localStorage.removeItem('jwt')
+    store.clearAuth()
   }
 
-  return { token, login, logout, extendSession, error }
+  return {
+    login,
+    logout,
+    extendSession,
+    token,
+    user: store.user,
+    error: store.error 
+  }
 }

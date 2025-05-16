@@ -1,12 +1,12 @@
-import './assets/main.css'
-
+// main.js
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
+import { createPinia } from 'pinia'
 
-createApp(App).use(router).mount('#app')
+const app = createApp(App)
 
-app.use(createPinia())
-
-app.mount('#app')
+const pinia = createPinia()
+app.use(pinia)       // Pinia branché AVANT le mount
+app.use(router)
+app.mount('#app')    // Et ensuite seulement on monte

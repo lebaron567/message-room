@@ -31,7 +31,7 @@ export default {
    */
   async extendSession(token) {
     const response = await fetch(`${API_BASE_URL}/protected/extend_session`, {
-      method: 'GET',
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`
       }
