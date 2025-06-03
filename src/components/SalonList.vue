@@ -3,6 +3,11 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/js/useAuth'
 import { getSalons } from '@/services/SalonService'
+import { useAuthStore } from '@/stores/auth'
+
+
+const authStore = useAuthStore()             
+const { setCurrentSalon } = authStore
 
 const salons = ref([])
 const router = useRouter()
@@ -18,6 +23,7 @@ const fetchSalons = async () => {
 
 const openSalon = (salonId) => {
   console.log('➡️ Ouverture du salon ID :', salonId)
+  setCurrentSalon(salonId)
   router.push({ name: 'SalonMessages', params: { id: salonId } })
 }
 

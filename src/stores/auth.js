@@ -6,6 +6,7 @@ export const useAuthStore = defineStore('auth', {
     token: null,
     user: null,
     error: null,
+    currentSalonId: null,
   }),
   actions: {
     setToken(token) {
@@ -21,7 +22,10 @@ export const useAuthStore = defineStore('auth', {
     },
     setError(message) {
       this.error = message;
-    }
+    },
+    setCurrentSalon(id) {
+   this.currentSalon = id
+}
   },
   persist: true, 
 });
