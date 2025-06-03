@@ -22,7 +22,10 @@ export const useAuthStore = defineStore('auth', {
     },
     setError(message) {
       this.error = message;
-    }
+    },
+    setCurrentSalon(id) {
+   this.currentSalon = id
+}
   },
   persist: true, 
 });
