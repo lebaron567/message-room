@@ -6,6 +6,8 @@ import { getMessages } from '@/services/MessageService'
 import MessageInput from '@/components/MessageInput.vue'
 import { useRoute } from 'vue-router'
 import { connect } from '@/services/WebSocketService'
+import { moderateMessage } from '@/services/MessageService'
+import { getSalons } from '@/services/SalonService'
 
 const authStore = useAuthStore()
 const { token } = useAuth()
@@ -31,8 +33,9 @@ const loadMessages = async () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   if (token.value && channelId) {
+    await loadCreator()
     loadMessages()
     connect(token.value, channelId, (msg) => {
       messages.value.push(msg)
@@ -41,6 +44,28 @@ onMounted(() => {
     console.warn('⛔️ Token ou channelId manquant')
   }
 })
+
+const moderate = async (timestamp, author) => {
+  const replacement = prompt('Contenu de remplacement :', '[message modéré]')
+  if (!replacement) return
+
+  const newContent = {
+    type: 'Text',
+    value: replacement
+  }
+
+  try {
+    await moderateMessage(Number(channelId), timestamp, author, newContent, token.value)
+    alert('✅ Message modéré')
+    const msg = messages.value.find(m => m.timestamp === timestamp && m.author === author)
+    if (msg) msg.content = newContent
+  } catch (e) {
+    console.error('❌ Erreur de modération', e)
+    alert('❌ Erreur de modération')
+  }
+}
+
+
 </script>
 
 <template>
