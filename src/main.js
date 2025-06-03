@@ -3,9 +3,11 @@ import App from './App.vue'
 import router from './router'
 import { createPinia } from 'pinia'
 import { useAuth } from '@/js/useAuth'
+import piniaPersist from 'pinia-plugin-persistedstate'
 
 const app = createApp(App)
 const pinia = createPinia()
+pinia.use(piniaPersist)
 
 app.use(pinia)
 app.use(router)
