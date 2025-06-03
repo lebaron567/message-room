@@ -5,17 +5,16 @@ import { useAuth } from '@/js/useAuth'
 import { getSalons } from '@/services/SalonService'
 import { useAuthStore } from '@/stores/auth'
 
-
-const authStore = useAuthStore()             
+const authStore = useAuthStore()
 const { setCurrentSalon } = authStore
 
 const salons = ref([])
 const router = useRouter()
-const { token } = useAuth() // ✅ récupère le token réactif
+const { token } = useAuth()
 
 const fetchSalons = async () => {
   try {
-    salons.value = await getSalons(token.value) // ✅ injecte le token
+    salons.value = await getSalons(token.value)
   } catch (error) {
     console.error('❌ Erreur lors de la récupération des salons :', error)
   }
@@ -38,7 +37,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="container">
     <h1>Liste des Salons Privés</h1>
     <ul>
       <li
@@ -55,22 +54,58 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: #FFF;
+}
+
+/* Liste des salons */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Élément individuel de salon */
 .salon-item {
   display: flex;
   align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease, transform 0.1s ease;
   cursor: pointer;
-  padding: 8px;
-  border-bottom: 1px solid #ccc;
 }
 
 .salon-item:hover {
-  background-color: #f5f5f5;
+  background-color: #f9f9f9;
+  transform: translateY(-2px);
 }
 
+/* Image ronde */
 .salon-image {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  margin-right: 10px;
+  object-fit: cover;
+  border: 2px solid #eee;
+}
+
+/* Nom du salon */
+.salon-item span {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
 }
 </style>

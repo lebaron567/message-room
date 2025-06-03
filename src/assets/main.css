@@ -1,19 +1,20 @@
 @import './base.css';
 
 body {
-  background-color: #8AA3FF;
+  background: #0c5b7a;
+  background: linear-gradient(180deg, rgba(12, 91, 122, 1) 0%, rgba(3, 2, 2, 1) 100%);
 }
 
 
 @media (min-width: 1024px) {
-  body {
+  /* body {
     display: flex;
     place-items: center;
   }
 
-  #app {
+  /* #app {
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
-  }
+  } */
 }
