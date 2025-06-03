@@ -3,7 +3,11 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/js/useAuth'
 import { getSalons } from '@/services/SalonService'
-const { setCurrentSalon } = useAuthStore()
+import { useAuthStore } from '@/stores/auth'
+
+
+const authStore = useAuthStore()             
+const { setCurrentSalon } = authStore
 
 const salons = ref([])
 const router = useRouter()
