@@ -41,6 +41,8 @@ export default {
       throw new Error('Impossible de prolonger la session.')
     }
 
-    return await response.json()
+    const data = await response.json()
+    console.log('🔁 Nouveau token reçu :', data.token)
+    return data
   }
 }
