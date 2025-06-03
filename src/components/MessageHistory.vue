@@ -10,12 +10,14 @@ import { connect } from '@/services/WebSocketService'
 const authStore = useAuthStore()
 const { token } = useAuth()
 const route = useRoute()
-const channelId = route.params.id // ✅ récupération dynamique de l'ID
+const props = defineProps(['id'])
+const channelId = props.id// ✅ récupération dynamique de l'ID
 
 const messages = ref([])
 const offset = ref(0)
 const batchSize = 40
 const hasMore = ref(true)
+
 
 
 
@@ -67,7 +69,7 @@ onMounted(() => {
     </div>
   </div>
 
-  <MessageInput @messageSent="onMessageSent" />
+  <MessageInput  />
 </template>
 
 
