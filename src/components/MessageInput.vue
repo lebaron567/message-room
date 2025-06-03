@@ -14,16 +14,14 @@ const emit = defineEmits(['messageSent'])
 
 const handleSend = async () => {
   if (!messageText.value.trim()) return
-  
-  const channelId = route.params.id // ✅ on lit directement depuis l'URL
+
+  const channelId = route.params.id
   const msg = {
     type: 'Text',
     value: messageText.value
   }
 
-  // Envoi via WebSocket ou REST (dans sendMessage)
-await sendMessage(channelId, msg, token.value)
-
+  await sendMessage(channelId, msg, token.value)
 
   messageText.value = ''
 }
@@ -31,50 +29,65 @@ await sendMessage(channelId, msg, token.value)
 
 <template>
   <div class="message-input">
-    <input v-model="messageText" @keyup.enter="handleSend" placeholder="Écrire un message..." />
-    <button @click="handleSend">Envoyer</button>
+    <input
+      v-model="messageText"
+      @keyup.enter="handleSend"
+      placeholder="Envoyer un message..."
+    />
+    <button @click="handleSend">➤</button>
   </div>
 </template>
 
 <style scoped>
 .message-input {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px;
-  border-top: 1px solid #ddd;
-  background-color: #fff;
-  position: sticky;
-  bottom: 0;
+  background-color: #2f3136;
+  padding: 12px 16px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 100;
 }
 
-input {
+
+.message-input input {
   flex: 1;
   padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 20px;
+  background-color: #32353b;
+  color: #dcddde;
+  border: none;
+  border-radius: 6px;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.3s;
+  transition: background-color 0.2s ease;
 }
 
-input:focus {
-  border-color: #4CAF50;
+.message-input input::placeholder {
+  color: #72767d;
 }
 
-button {
-  background-color: #4CAF50;
+.message-input input:focus {
+  background-color: #3c3f45;
+}
+
+.message-input button {
+  background-color: #55C4FF;
   color: white;
   border: none;
-  border-radius: 20px;
-  padding: 10px 18px;
+  border-radius: 6px;
+  padding: 10px 14px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
 }
 
-button:hover {
-  background-color: #45a049;
+.message-input button:hover {
+  background-color: #4752c4;
 }
 </style>
-
