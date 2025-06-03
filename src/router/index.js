@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginForm from '@/components/LoginForm.vue'
 import HomeView from '@/views/HomeView.vue'
 import SalonList from '@/components/SalonList.vue'
+import CreateSalon from '@/components/createsalon.vue'
 import '@/assets/main.css'
 import MessageHistory from '@/components/MessageHistory.vue'
 
@@ -14,7 +15,8 @@ const routes = [
     name: 'SalonMessages', 
     component: MessageHistory, 
     props: true 
-  }
+  },
+  { path: '/create-salon', name: 'create-salon', component: CreateSalon},
 ]
 
 const router = createRouter({
