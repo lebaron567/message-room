@@ -10,17 +10,22 @@ const authStore = useAuthStore()
 
 const emit = defineEmits(['messageSent'])
 
-const handleSend = () => {
+const handleSend = async () => {
   if (!messageText.value.trim()) return
 
   const msg = {
-    content: messageText.value,
-    channel_id: authStore.currentSalon,
-    // Ajoute les infos utiles si besoin
+    type: 'Text',
+    value: messageText.value
   }
 
-  sendMessage(msg)
-  emit('messageSent', msg)
+  // Envoi via WebSocket ou REST (dans sendMessage)
+  await sendMessage(authStore.currentSalon, msg, token.value)
+
+  emit('messageSent', {
+    author: authStore.user?.username || 'Moi',
+    content: msg
+  })
+
   messageText.value = ''
 }
 </script>

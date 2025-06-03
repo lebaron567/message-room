@@ -40,17 +40,24 @@ onMounted(() => {
   }
 })
 </script>
-
 <template>
   <div class="message-history">
     <button v-if="hasMore" @click="loadMessages">⬆️ Charger les messages précédents</button>
 
-    <div v-for="msg in messages" :key="msg.id" class="message">
-      <strong>{{ msg.user?.username || 'Utilisateur' }} :</strong> {{ msg.content }}
+    <div v-for="msg in messages" :key="msg.timestamp || msg.id" class="message">
+      <strong>{{ msg.author || 'Utilisateur' }} :</strong>
+      <template v-if="msg.content?.type === 'Image'">
+        <img :src="msg.content.value" alt="image" style="max-height: 100px" />
+      </template>
+      <template v-else>
+        {{ msg.content?.value || msg.content }}
+      </template>
     </div>
   </div>
+
   <MessageInput @messageSent="onMessageSent" />
 </template>
+
 
 <style scoped>
 .message-history {
