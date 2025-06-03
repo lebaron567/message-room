@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuth } from '@/js/useAuth'
 import { getMessages } from '@/services/MessageService'
+import { watch } from 'vue'
 
 const { token } = useAuth()
 const route = useRoute()
@@ -13,14 +14,22 @@ const offset = ref(0)
 const batchSize = 40
 const hasMore = ref(true)
 
+watch(() => route.params.id, async (newId) => {
+  messages.value = []
+  offset.value = 0
+  hasMore.value = true
+  await loadMessages()
+})
+
 const loadMessages = async () => {
   try {
     const newMessages = await getMessages(channelId, offset.value, token.value)
     if (newMessages.length < batchSize) {
       hasMore.value = false
     }
-    messages.value = [...newMessages, ...messages.value]
-    offset.value += batchSize
+    messages.value = [...newMessages.reverse(), ...messages.value]
+
+    offset.value += 1
   } catch (err) {
     console.error('❌ Erreur lors du chargement des messages :', err)
   }
