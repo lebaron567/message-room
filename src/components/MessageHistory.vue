@@ -4,11 +4,14 @@ import { useAuth } from '@/js/useAuth'
 import { useAuthStore } from '@/stores/auth'
 import { getMessages } from '@/services/MessageService'
 import MessageInput from '@/components/MessageInput.vue'
+import { useRoute } from 'vue-router'
 
 
 const authStore = useAuthStore()
 const { token } = useAuth()
-const channelId = authStore.currentSalon
+const route = useRoute()
+const channelId = route.params.id
+
 
 const messages = ref([])
 const offset = ref(0)
