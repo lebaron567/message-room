@@ -34,4 +34,21 @@ export async function createSalon(salon, token) {
     console.error('❌ Erreur lors de la création du salon :', error);
     throw error;
   }
+}  
+
+
+export async function banUserFromChannel(channelId, userId, token) {
+  const res = await fetch(`https://edu.tardigrade.land/msg/protected/channel/${channelId}/user/${userId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!res.ok) {
+    const errData = await res.json()
+    throw new Error(errData.message || 'Erreur lors du bannissement')
+  }
+
+  return true
 }

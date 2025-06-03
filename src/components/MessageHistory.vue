@@ -6,6 +6,8 @@ import { getMessages} from '@/services/MessageService'
 import MessageInput from '@/components/MessageInput.vue'
 import { useRoute } from 'vue-router'
 import { connect } from '@/services/WebSocketService'
+import { moderateMessage } from '@/services/MessageService'
+import { getSalons } from '@/services/SalonService'
 
 const authStore = useAuthStore()
 const { token } = useAuth()
@@ -17,6 +19,17 @@ const messages = ref([])
 const offset = ref(0)
 const batchSize = 40
 const hasMore = ref(true)
+const creator = ref('')
+
+const loadCreator = async () => {
+  try {
+    const salons = await getSalons(token.value)
+    const current = salons.find(s => s.id == channelId)
+    if (current) creator.value = current.creator
+  } catch (err) {
+    console.error('❌ Erreur chargement du créateur du salon', err)
+  }
+}
 
 
 
@@ -37,11 +50,10 @@ const loadMessages = async () => {
   container.scrollTop = container.scrollHeight
   }
 
-onMounted(() => {
+onMounted(async () => {
   if (token.value && channelId) {
+    await loadCreator()
     loadMessages()
-
-    // Connexion WebSocket avec les bons paramètres
     connect(token.value, channelId, (msg) => {
       messages.value.push(msg)
     })
@@ -49,26 +61,53 @@ onMounted(() => {
     console.warn('⛔️ Token ou channelId manquant')
   }
 })
+
+const moderate = async (timestamp, author) => {
+  const replacement = prompt('Contenu de remplacement :', '[message modéré]')
+  if (!replacement) return
+
+  const newContent = {
+    type: 'Text',
+    value: replacement
+  }
+
+  try {
+    await moderateMessage(Number(channelId), timestamp, author, newContent, token.value)
+    alert('✅ Message modéré')
+    const msg = messages.value.find(m => m.timestamp === timestamp && m.author === author)
+    if (msg) msg.content = newContent
+  } catch (e) {
+    console.error('❌ Erreur de modération', e)
+    alert('❌ Erreur de modération')
+  }
+}
+
+
 </script>
 <template>
   <div class="message-history">
     <button v-if="hasMore" @click="loadMessages">⬆️ Charger les messages précédents</button>
 
-    <div
-      v-for="msg in messages"
-      :key="msg.timestamp || msg.id"
-      :class="['message', msg.author === authStore.user?.username ? 'right' : 'left']"
+  <div v-for="msg in messages"
+    :key="msg.timestamp || msg.id"
+    :class="['message', msg.author === authStore.user?.username ? 'right' : 'left']"
+  >
+    <strong>{{ msg.author || 'Utilisateur' }} :</strong>
+    <template v-if="msg.content?.type === 'Image'">
+      <img :src="msg.content.value" alt="image" />
+    </template>
+    <template v-else>
+      {{ msg.content?.value || msg.content }}
+    </template>
+    <button
+      v-if="authStore.user?.username === creator"
+      @click="moderate(msg.timestamp, msg.author)"
+      class="mod-btn"
     >
-      <strong>{{ msg.author || 'Utilisateur' }} :</strong>
-      <template v-if="msg.content?.type === 'Image'">
-        <img :src="msg.content.value" alt="image" />
-      </template>
-      <template v-else>
-        {{ msg.content?.value || msg.content }}
-      </template>
-    </div>
+      🛠 Modérer
+    </button>
   </div>
-
+  </div>
   <MessageInput  />
 </template>
 
@@ -129,5 +168,20 @@ button {
   border-radius: 6px;
   cursor: pointer;
   margin-top: 10px;
+}
+
+.mod-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  margin-top: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mod-btn:hover {
+  background-color: #c82333;
 }
 </style>
