@@ -1,7 +1,8 @@
 let socket = null
 
-export function connect(token, onMessage) {
-  socket = new WebSocket(`wss://edu.tardigrade.land/msg/ws?token=${token}`)
+
+export function connect(token, channelId, onMessage) {
+  socket = new WebSocket(`wss://edu.tardigrade.land/msg/ws/channel/${channelId}/token/${token}`)
 
   socket.onopen = () => {
     console.log('🟢 WebSocket connecté')
@@ -20,16 +21,4 @@ export function connect(token, onMessage) {
   socket.onerror = (err) => {
     console.error('❌ Erreur WebSocket :', err)
   }
-}
-
-export function send(messageObject) {
-  if (socket?.readyState === WebSocket.OPEN) {
-    socket.send(JSON.stringify(messageObject))
-  } else {
-    console.warn('⚠️ WebSocket non prêt')
-  }
-}
-
-export function disconnect() {
-  socket?.close()
 }

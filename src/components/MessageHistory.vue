@@ -2,16 +2,15 @@
 import { ref, onMounted } from 'vue'
 import { useAuth } from '@/js/useAuth'
 import { useAuthStore } from '@/stores/auth'
-import { getMessages } from '@/services/MessageService'
+import { getMessages} from '@/services/MessageService'
 import MessageInput from '@/components/MessageInput.vue'
 import { useRoute } from 'vue-router'
-
+import { connect } from '@/services/WebSocketService'
 
 const authStore = useAuthStore()
 const { token } = useAuth()
 const route = useRoute()
-const channelId = route.params.id
-
+const channelId = route.params.id // ✅ récupération dynamique de l'ID
 
 const messages = ref([])
 const offset = ref(0)
@@ -19,7 +18,7 @@ const batchSize = 40
 const hasMore = ref(true)
 
 const onMessageSent = (msg) => {
-  messages.value.push(msg) // On l'ajoute en bas de la liste
+  messages.value.push(msg)
 }
 
 const loadMessages = async () => {
@@ -38,8 +37,13 @@ const loadMessages = async () => {
 onMounted(() => {
   if (token.value && channelId) {
     loadMessages()
+
+    // Connexion WebSocket avec les bons paramètres
+    connect(token.value, channelId, (msg) => {
+      messages.value.push(msg)
+    })
   } else {
-    console.warn('⛔️ Token ou salon manquant')
+    console.warn('⛔️ Token ou channelId manquant')
   }
 })
 </script>
