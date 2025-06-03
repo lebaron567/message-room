@@ -19,6 +19,22 @@ const offset = ref(0)
 const batchSize = 40
 const hasMore = ref(true)
 
+const creator = ref(null)
+
+const loadCreator = async () => {
+  try {
+    const salons = await getSalons(token.value)
+    const currentSalon = salons.find(s => s.id == channelId)
+    if (currentSalon) {
+      creator.value = currentSalon.creator
+    } else {
+      console.warn('Salon non trouvé dans la liste')
+    }
+  } catch (error) {
+    console.error('❌ Erreur de chargement du créateur', error)
+  }
+}
+
 const loadMessages = async () => {
   try {
     const newMessages = await getMessages(channelId, offset.value, token.value)
@@ -32,6 +48,7 @@ const loadMessages = async () => {
     console.error('❌ Erreur de chargement :', err)
   }
 }
+
 
 onMounted(async () => {
   if (token.value && channelId) {
@@ -98,10 +115,10 @@ const moderate = async (timestamp, author) => {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background-color: #2b2d31; /* Discord dark */
+  height: 100vh; /* 🔁 Fix: assure une hauteur totale */
+  background-color: #2b2d31;
   color: #e0e0e0;
-  padding-bottom: 80px; /* leave room for input */
+  padding-bottom: 80px;
   font-family: 'Segoe UI', sans-serif;
 }
 
@@ -112,6 +129,7 @@ const moderate = async (timestamp, author) => {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-height: 0; /* 🔁 Fix: permet à flex de fonctionner avec scroll */
 }
 
 .message {
