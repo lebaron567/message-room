@@ -1,40 +1,20 @@
 @import './base.css';
 
-
-#app {
-  width: 100%;
-  /* max-width: 1280px; */
-  margin: 0;
-  padding: 0;
-  font-weight: normal;
+body {
+  background: #0c5b7a;
+  background: linear-gradient(180deg, rgba(12, 91, 122, 1) 0%, rgba(3, 2, 2, 1) 100%);
 }
-
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
-}
-
-/* @media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
-
 
 
 @media (min-width: 1024px) {
-  body {
+  /* body {
     display: flex;
     place-items: center;
   }
 
-  #app {
+  /* #app {
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
-  }
-} */
+  } */
+}
