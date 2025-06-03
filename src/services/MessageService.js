@@ -64,6 +64,28 @@ export async function sendMessageToAPI(channelId, messageContent, token) {
   return response.data
 }
 
+export async function moderateMessage(channelId, timestamp, author, newContent, token) {
+  const payload = {
+    channel_id: channelId,
+    timestamp,
+    author,
+    content: newContent
+  }
+
+  const response = await axios.post(
+    `${API_URL}/protected/channel/${channelId}/message/moderate`,
+    payload,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  )
+
+  return response.data
+}
+
 
 export function closeWebSocket() {
   socket?.close()
