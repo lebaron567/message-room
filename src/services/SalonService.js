@@ -21,3 +21,21 @@ export async function getSalons(token) {
     throw error
   }
 }
+
+export const addMemberToSalon = async (salonId, userIdentifier, token) => {
+  const response = await fetch(`https://edu.tardigrade.land/msg/protected/channel/${salonId}/user/${userIdentifier}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ user: userIdentifier }),
+  })
+
+  if (!response.ok) {
+    const err = await response.json()
+    throw new Error(err.message || 'Erreur lors de l’ajout du membre')
+  }
+
+  return await response.json()
+}
