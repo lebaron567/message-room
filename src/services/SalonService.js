@@ -1,4 +1,3 @@
-// src/services/SalonService.js
 import axios from 'axios'
 
 const BASE_URL = 'https://edu.tardigrade.land/msg/'
@@ -23,7 +22,7 @@ export async function getSalons(token) {
 }
 
 export const addMemberToSalon = async (salonId, userIdentifier, token) => {
-  const response = await fetch(`https://edu.tardigrade.land/msg/protected/channel/${salonId}/user/${userIdentifier}`, {
+  const response = await fetch(`${BASE_URL}protected/channel/${salonId}/user/${userIdentifier}`, {
     method: 'PUT',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -38,7 +37,6 @@ export const addMemberToSalon = async (salonId, userIdentifier, token) => {
   }
 }
 
-  return await response.json()
 export async function createSalon(salon, token) {
   try {
     const response = await axios.post(BASE_URL + "protected/channel", salon, {
@@ -51,11 +49,10 @@ export async function createSalon(salon, token) {
     console.error('❌ Erreur lors de la création du salon :', error);
     throw error;
   }
-}  
-
+}
 
 export async function banUserFromChannel(channelId, userId, token) {
-  const res = await fetch(`https://edu.tardigrade.land/msg/protected/channel/${channelId}/user/${userId}`, {
+  const res = await fetch(`${BASE_URL}protected/channel/${channelId}/user/${userId}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -69,4 +66,3 @@ export async function banUserFromChannel(channelId, userId, token) {
 
   return true
 }
-
