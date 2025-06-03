@@ -1,7 +1,7 @@
 // src/services/SalonService.js
 import axios from 'axios'
 
-const BASE_URL = 'https://edu.tardigrade.land/msg/'
+const API_URL = 'https://edu.tardigrade.land/msg/protected/user/channels'
 
 /**
  * Récupère la liste des salons de l'utilisateur connecté
@@ -10,7 +10,7 @@ const BASE_URL = 'https://edu.tardigrade.land/msg/'
  */
 export async function getSalons(token) {
   try {
-    const response = await axios.get(BASE_URL + "protected/user/channels", {
+    const response = await axios.get(API_URL, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -19,19 +19,5 @@ export async function getSalons(token) {
   } catch (error) {
     console.error('❌ Erreur lors de la récupération des salons :', error)
     throw error
-  }
-}
-
-export async function createSalon(salon, token) {
-  try {
-    const response = await axios.post(BASE_URL + "protected/channel", salon, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('❌ Erreur lors de la création du salon :', error);
-    throw error;
   }
 }
