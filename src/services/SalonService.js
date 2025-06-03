@@ -35,3 +35,38 @@ export async function createSalon(salon, token) {
     throw error;
   }
 }
+
+export const getChannelMembers = async (channelId, token) => {
+  const res = await fetch(`${BASE_URL}/protected/channel/${channelId}/members`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  if (!res.ok) throw new Error('❌ Impossible de récupérer les membres')
+  return await res.json()
+}
+
+export const addUserToChannel = async (channelId, userId, token) => {
+  const res = await fetch(`${BASE_URL}/protected/channel/${channelId}/user/${userId}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  if (!res.ok) throw new Error('❌ Impossible d’ajouter cet utilisateur')
+  return await res.json()
+}
+
+export const removeUserFromChannel = async (channelId, userId, token) => {
+  const res = await fetch(`${BASE_URL}/protected/channel/${channelId}/user/${userId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  if (!res.ok) throw new Error('❌ Impossible de retirer cet utilisateur')
+  return true
+}

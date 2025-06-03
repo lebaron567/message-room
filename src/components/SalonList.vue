@@ -6,7 +6,7 @@ import { getSalons } from '@/services/SalonService'
 import { useAuthStore } from '@/stores/auth'
 
 
-const authStore = useAuthStore()             
+const authStore = useAuthStore()
 const { setCurrentSalon } = authStore
 
 const salons = ref([])
