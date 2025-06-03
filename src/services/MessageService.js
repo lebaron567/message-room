@@ -37,13 +37,33 @@ export function connectWebSocket(token, onMessageReceived) {
   }
 }
 
-export function sendMessage(messageObject) {
+export async function sendMessage(channelId, messageContent, token) {
   if (socket && socket.readyState === WebSocket.OPEN) {
-    socket.send(JSON.stringify(messageObject))
+    socket.send(JSON.stringify({
+      channel_id: channelId,
+      ...messageContent
+    }))
   } else {
-    console.warn('⚠️ WebSocket non connecté')
+    // Fallback REST si WebSocket est down ou côté serveur non implémenté
+    await sendMessageToAPI(channelId, messageContent, token)
   }
 }
+
+
+export async function sendMessageToAPI(channelId, messageContent, token) {
+  const response = await axios.post(
+    `${API_URL}/protected/channel/${channelId}/message`,
+    messageContent,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  )
+  return response.data
+}
+
 
 export function closeWebSocket() {
   socket?.close()
