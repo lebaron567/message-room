@@ -86,6 +86,7 @@ onMounted(() => {
         </div>
       </li>
     </ul>
+    <button @click="router.push('/create-salon')">Créer un nouveau salon</button>
   </div>
 </template>
 
