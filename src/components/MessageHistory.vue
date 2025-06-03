@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick  } from 'vue'
 import { useAuth } from '@/js/useAuth'
 import { useAuthStore } from '@/stores/auth'
 import { getMessages} from '@/services/MessageService'
@@ -17,9 +17,7 @@ const offset = ref(0)
 const batchSize = 40
 const hasMore = ref(true)
 
-const onMessageSent = (msg) => {
-  messages.value.push(msg)
-}
+
 
 const loadMessages = async () => {
   try {
@@ -32,7 +30,10 @@ const loadMessages = async () => {
   } catch (err) {
     console.error('❌ Erreur lors du chargement des messages :', err)
   }
-}
+  await nextTick()  // attendre que le DOM soit mis à jour
+  const container = document.querySelector('.message-history')
+  container.scrollTop = container.scrollHeight
+  }
 
 onMounted(() => {
   if (token.value && channelId) {

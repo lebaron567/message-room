@@ -24,10 +24,6 @@ const handleSend = async () => {
   // Envoi via WebSocket ou REST (dans sendMessage)
 await sendMessage(channelId, msg, token.value)
 
-  emit('messageSent', {
-    author: authStore.user?.username || 'Moi',
-    content: msg
-  })
 
   messageText.value = ''
 }
