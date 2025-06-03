@@ -1,25 +1,23 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
 import { useAuth } from '@/js/useAuth'
+import { useAuthStore } from '@/stores/auth'
 import { getMessages } from '@/services/MessageService'
-import { watch } from 'vue'
+import MessageInput from '@/components/MessageInput.vue'
 
+
+const authStore = useAuthStore()
 const { token } = useAuth()
-const route = useRoute()
-const channelId = route.params.id
+const channelId = authStore.currentSalon
 
 const messages = ref([])
 const offset = ref(0)
 const batchSize = 40
 const hasMore = ref(true)
 
-watch(() => route.params.id, async (newId) => {
-  messages.value = []
-  offset.value = 0
-  hasMore.value = true
-  await loadMessages()
-})
+const onMessageSent = (msg) => {
+  messages.value.push(msg) // On l'ajoute en bas de la liste
+}
 
 const loadMessages = async () => {
   try {
@@ -27,17 +25,18 @@ const loadMessages = async () => {
     if (newMessages.length < batchSize) {
       hasMore.value = false
     }
-    messages.value = [...newMessages.reverse(), ...messages.value]
-
-    offset.value += 1
+    messages.value = [...newMessages, ...messages.value]
+    offset.value += batchSize
   } catch (err) {
     console.error('❌ Erreur lors du chargement des messages :', err)
   }
 }
 
 onMounted(() => {
-  if (token.value) {
+  if (token.value && channelId) {
     loadMessages()
+  } else {
+    console.warn('⛔️ Token ou salon manquant')
   }
 })
 </script>
@@ -46,10 +45,11 @@ onMounted(() => {
   <div class="message-history">
     <button v-if="hasMore" @click="loadMessages">⬆️ Charger les messages précédents</button>
 
-    <div class="message" v-for="msg in messages" :key="msg.id">
+    <div v-for="msg in messages" :key="msg.id" class="message">
       <strong>{{ msg.user?.username || 'Utilisateur' }} :</strong> {{ msg.content }}
     </div>
   </div>
+  <MessageInput @messageSent="onMessageSent" />
 </template>
 
 <style scoped>
