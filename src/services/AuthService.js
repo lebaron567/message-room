@@ -1,12 +1,7 @@
 const API_BASE_URL = 'https://edu.tardigrade.land/msg'
 
 export default {
-  /**
-   * Envoie une requête de connexion
-   * @param {string} username
-   * @param {string} password
-   * @returns {Promise<{ token: string, admin: boolean }>}
-   */
+
   async login(username, password) {
     const response = await fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
