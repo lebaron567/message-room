@@ -1,4 +1,3 @@
-// src/services/MessageService.js
 import axios from 'axios'
 
 const API_URL = 'https://edu.tardigrade.land/msg'
@@ -44,7 +43,6 @@ export async function sendMessage(channelId, messageContent, token) {
       ...messageContent
     }))
   } else {
-    // Fallback REST si WebSocket est down ou côté serveur non implémenté
     await sendMessageToAPI(channelId, messageContent, token)
   }
 }
