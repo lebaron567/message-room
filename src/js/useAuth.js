@@ -9,16 +9,15 @@ export function useAuth() {
 
 
   const login = async (username, password) => {
-      console.log('🧪 login() appelé avec :', username, password) // ← ce log DOIT apparaître
+
     try {
       const data = await AuthService.login(username, password)
-      console.log('✅ Réponse API login :', data)
       store.setToken(data.token)
       store.setUser({ username, admin: data.admin })
       store.setError(null);
       return true
     } catch (err) {
-      store.setError(err.message); // à ajouter dans le store si besoin
+      store.setError(err.message); 
       return false
     }
   }

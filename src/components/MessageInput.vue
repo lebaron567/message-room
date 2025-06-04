@@ -41,20 +41,31 @@ const route = useRoute()
 const emit = defineEmits(['messageSent'])
 
 const handleSend = async () => {
-  if (!messageText.value.trim()) return
-
   const channelId = route.params.id
-  const msg = {
-    type: 'Text',
-    value: messageText.value
+
+  // Envoi message texte
+  if (messageText.value.trim()) {
+    const textMsg = {
+      type: 'Text',
+      value: messageText.value
+    }
+    await sendMessage(channelId, textMsg, token.value)
+    emit('messageSent', textMsg)
+    messageText.value = ''
   }
 
-  await sendMessage(channelId, msg, token.value)
-  await sendMessage(channelId, msg, token.value)
-
-  messageText.value = ''
-  imageUrl.value = ''
+  // Envoi image si présente
+  if (imageUrl.value.trim()) {
+    const imageMsg = {
+      type: 'Image',
+      value: imageUrl.value
+    }
+    await sendMessage(channelId, imageMsg, token.value)
+    emit('messageSent', imageMsg)
+    imageUrl.value = ''
+  }
 }
+
 </script>
 
 
@@ -64,6 +75,11 @@ const handleSend = async () => {
       v-model="messageText"
       @keyup.enter="handleSend"
       placeholder="Envoyer un message..."
+    />
+    <input
+      v-model="imageUrl"
+      @keyup.enter="handleSend"
+      placeholder="URL d'image (facultatif)"
     />
     <button @click="handleSend">➤</button>
   </div>
