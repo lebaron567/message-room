@@ -90,18 +90,32 @@ const moderate = async (timestamp, author) => {
     <div class="message-history">
       <button v-if="hasMore" @click="loadMessages">⬆ Charger les anciens messages</button>
 
-      <div
-        v-for="msg in messages"
-        :key="msg.timestamp || msg.id"
-        :class="['message', msg.author === authStore.user?.username ? 'right' : 'left']"
+    <div
+      v-for="msg in messages"
+      :key="msg.timestamp || msg.id"
+      :class="['message', msg.author === authStore.user?.username ? 'right' : 'left']"
+    >
+      <strong>{{ msg.author || 'Utilisateur' }}</strong>
+      
+      <template v-if="msg.content?.type === 'Image'">
+        <img :src="msg.content.value" alt="image" />
+      </template>
+      <template v-else>
+        {{ msg.content?.value || msg.content }}
+      </template>
+
+      <!-- Bouton visible uniquement si l'utilisateur est créateur du salon -->
+      <button
+        v-if="creator === authStore.user?.username"
+        class="moderate-button"
+        @click="moderate(msg.timestamp, msg.author)"
       >
-        <strong>{{ msg.author || 'Utilisateur' }}</strong>
-        <template v-if="msg.content?.type === 'Image'">
-          <img :src="msg.content.value" alt="image" />
-        </template>
-        <template v-else>
-          {{ msg.content?.value || msg.content }}
-        </template>
+        ✏️ Modérer
+      </button>
+    </div>
+
+      <div v-if="messages.length === 0" class="no-messages">
+        Aucune conversation pour le moment.
       </div>
     </div>
 
@@ -183,5 +197,19 @@ button {
 
 button:hover {
   background-color: #4752c4;
+}
+
+.moderate-button {
+  margin-top: 6px;
+  align-self: flex-end;
+  background-color: transparent;
+  color: #ccc;
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.moderate-button:hover {
+  color: #ff5e5e;
 }
 </style>
